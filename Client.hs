@@ -34,7 +34,7 @@ messageConsole :: Region -- ^ Region to operate in.
           -> Text   -- ^ Name of the queue to create.
           -> IO ()
 messageConsole r url = do
-    lgr <- newLogger Debug stdout
+    lgr <- newLogger Error stdout
     env <- newEnv r (FromKeys access secret) <&> set envLogger lgr
 
     let say = liftIO . Text.putStrLn
