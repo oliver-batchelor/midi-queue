@@ -35,6 +35,12 @@ server r url  = do
 
     runResourceT . runAWST env . within r $ forever $ do
 
-        ms  <- send (receiveMessage url & rmMaxNumberOfMessages ?~ 1)
-        forM_ (ms ^. rmrsMessages) $ \m ->
+        ms  <- send $ receiveMessage url
+          & rmMaxNumberOfMessages ?~ 1
+          & rmVisibilityTimeout ?~ 20
+          
+        forM_ (ms ^. rmrsMessages) $ \m -> do
             say $ "Received Message: " <> Text.pack (show m)
+
+            forM_ (m ^. mReceiptHandle) $ \handle ->
+              send (deleteMessage url handle)
