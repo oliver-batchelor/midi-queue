@@ -33,7 +33,7 @@ server r url  = do
 
     let say = liftIO . Text.putStrLn
 
-    runResourceT . runAWST env . within r $ do
+    runResourceT . runAWST env . within r $ forever $ do
 
         ms  <- send (receiveMessage url & rmMaxNumberOfMessages ?~ 1)
         forM_ (ms ^. rmrsMessages) $ \m ->
