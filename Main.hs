@@ -38,7 +38,7 @@ roundTrip :: Region -- ^ Region to operate in.
           -> IO ()
 roundTrip r url xs = do
     lgr <- newLogger Debug stdout
-    env <- newEnv (FromKeys access secret) <&> set envLogger lgr
+    env <- newEnv r (FromKeys access secret) <&> set envLogger lgr
 
     let say = liftIO . Text.putStrLn
 
