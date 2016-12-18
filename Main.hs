@@ -8,7 +8,7 @@
 -- Stability   : provisional
 -- Portability : non-portable (GHC extensions)
 --
-module Example.SQS where
+module Main where
 
 import           Control.Lens
 import           Control.Monad
@@ -22,16 +22,21 @@ import           Network.AWS.SQS
 import           System.IO
 
 
-access = AccessKey "AKIAJYSWT5EKWOTWTGVA"
-secret = SecretKey "blah blah blahj"
 
-url = "https://sqs.us-west-2.amazonaws.com/900735812162/midi"
+
+access = AccessKey "AKIAJYSWT5EKWOTWTGVA"
+secret = SecretKey "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"
+
+main = do
+  roundTrip Oregon "https://sqs.us-west-2.amazonaws.com/900735812162/midi" ["blah blah"]
+
+
 
 roundTrip :: Region -- ^ Region to operate in.
           -> Text   -- ^ Name of the queue to create.
           -> [Text] -- ^ Contents of the messages to send.
           -> IO ()
-roundTrip r name xs = do
+roundTrip r url xs = do
     lgr <- newLogger Debug stdout
     env <- newEnv (FromKeys access secret) <&> set envLogger lgr
 
@@ -39,7 +44,7 @@ roundTrip r name xs = do
 
     runResourceT . runAWST env . within r $ do
         -- void $ send (createQueue name)
-        -- url <- view gqursQueueURL <$> send (getQueueURL name)
+        -- url <- view gqursQueueURL <$> send (getQueueURL name)t
         -- say  $ "Received Queue URL: " <> url
 
         forM_ xs $ \x -> do
